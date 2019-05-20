@@ -1,12 +1,31 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import React from 'react'
+import ReactDOM from 'react-dom'
+import TracksPreview from './TracksPreview'
 
-ReactDOM.render(<App />, document.getElementById('root'));
+class Track {
+    constructor(title, artist) {
+        this.title = title;
+        this.artist = artist;
+    }
+};
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+const tracks = [
+    new Track("shut up", ["Greyson Chance"]),
+    new Track("i'm so tired...", ["Lauv, Troye Sivan"]),
+    new Track("Honey Whisky", ["SATICA"])
+];
+
+const App = () => {
+    return (
+        <div>
+            <TracksPreview tracks={null}/>
+            <TracksPreview tracks={[]}/>
+            <TracksPreview tracks={tracks} />
+        </div>
+    );
+};
+
+ReactDOM.render(
+    <App />,
+    document.querySelector('#root')
+)
