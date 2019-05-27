@@ -74,6 +74,7 @@ class TracksContainer extends React.Component {
                                 tracks={this.state.tracks}
                                 onClearTracks={this.onClearTracks}
                                 onRemoveTrack={this.onRemoveTrack}
+                                loginStatus={!this.state.accessToken}
                             />
                         </Grid.Column>
                     </Grid.Row>

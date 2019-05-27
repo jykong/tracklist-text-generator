@@ -71,7 +71,13 @@ class TracksPreview extends React.Component {
         }
         return (
             <Segment>
-                <p>No tracks to display</p>
+                <h5>No tracks to display</h5>
+                <p>
+                    {(this.props.loginStatus ?
+                    'Login to Spotify to add tracks from your playlists.' :
+                    'Logged in. Add tracks by selecting a playlist.'
+                    )}
+                </p>
             </Segment>
         );
     }

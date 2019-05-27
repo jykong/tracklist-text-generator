@@ -7,10 +7,12 @@ const buttonConfig = {
     false: {
         buttonType: 'button',
         link: '',
+        content: 'Add Tracks from Spotify playlist'
     },
     true: {
         buttonType: 'a',
-        link: SpotifyFunctions.redirectUrlToSpotifyForLogin()
+        link: SpotifyFunctions.redirectUrlToSpotifyForLogin(),
+        content: 'Login to Spotify'
     }
 }
 
@@ -41,16 +43,20 @@ class SpotifyPlaylistButtonDropdown extends Component {
     }
     
     renderButton = () => {
-        const { buttonType, link } = buttonConfig[!this.props.accessToken]
+        const { buttonType, link, content } = buttonConfig[!this.props.accessToken]
 
         return (
             <Button
                 as={buttonType}
                 href={link}
                 onClick={this.onButtonClick}
-            >
-                Add Tracks from Spotify playlist
-            </Button>
+                icon='spotify'
+                content={content}
+                labelPosition='left'
+                inverted
+                circular
+                style={{backgroundColor: '#1DB954'}}
+            />
         );
     }
 
