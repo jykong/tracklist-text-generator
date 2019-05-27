@@ -28,13 +28,8 @@ class SpotifyPlaylistButtonDropdown extends Component {
         e.preventDefault();
     }
 
-    onPlaylistSelected = (id) => {
-        this.setState({ showing: 'loading'});
-        this.props.onPlaylistToAdd(id, this.finishLoadingPlaylist);
-    }
-
-    finishLoadingPlaylist = () => {
-        this.setState({ showing: 'button' });
+    onPlaylistToAdd = (id, finishLoadingPlaylist) => {
+        this.props.onPlaylistToAdd(id, finishLoadingPlaylist);
     }
 
     onPlaylistFetchError = () => {
@@ -61,9 +56,6 @@ class SpotifyPlaylistButtonDropdown extends Component {
     }
 
     render() {
-        if(this.state.showing === 'loading') {
-            return <div>{'Loading Tracks' + (this.state.playlistName ? ' from ' + this.state.playlistName : '') + '...'}</div>
-        }
         if(this.state.showing === 'waiting for login') {
             return <div>Waiting for Spotify login...</div>
         }
@@ -71,7 +63,7 @@ class SpotifyPlaylistButtonDropdown extends Component {
             return (
                 <PlaylistChooser
                     accessToken={this.props.accessToken}
-                    onPlaylistSelected={this.onPlaylistSelected}
+                    onPlaylistToAdd={this.onPlaylistToAdd}
                     onPlaylistFetchError={this.onPlaylistFetchError}
                 />
             );

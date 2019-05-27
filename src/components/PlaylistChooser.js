@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import * as SpotifyFunctions from '../util/spotifyFunctions'
-import { Dropdown } from 'semantic-ui-react'
+import { Button, Dropdown, Grid } from 'semantic-ui-react'
 
 class PlaylistChooser extends Component {
-    state = { playlists: null, playlistOptions: null };
+    state = { playlists: null, playlistOptions: null, selectedPlaylist: null, loading: false };
   
     async componentDidMount() {
       //await SpotifyFunctions.setAccessToken(this.props.accessToken);
@@ -19,7 +19,16 @@ class PlaylistChooser extends Component {
     }
 
     onPlaylistSelected = (e, { value }) => {
-        this.props.onPlaylistSelected(value)
+        this.setState({selectedPlaylist: value});
+    }
+
+    onPlaylistToAdd = () => {
+        this.setState({loading: true})
+        this.props.onPlaylistToAdd(this.state.selectedPlaylist, this.finishLoadingPlaylist);
+    }
+
+    finishLoadingPlaylist = () => {
+        this.setState({loading: false})
     }
 
     renderAllPlaylists() {
@@ -40,16 +49,28 @@ class PlaylistChooser extends Component {
     renderPlaylists() {
         if(this.state.playlists) {
             return (
-                <div>
+                <Grid padded>
                     <Dropdown
                         fluid
                         options={this.state.playlistOptions}
                         onChange={this.onPlaylistSelected}
-                        placeholder='Select playlist to add tracks from'
+                        placeholder='Select Playlist'
+                        initialvalue={this.state.selectedPlaylist}
                         search
-                        style={{ maxWidth: 400 }}
+                        selection
+                        clearable
+                        loading={this.state.loading}
+                        style={{ maxWidth: 300 }}
                     />
-                </div>
+                    <Button
+                        color='green'
+                        onClick={this.onPlaylistToAdd}
+                        content='Add Tracks'
+                        icon='spotify'
+                        labelPosition='left'
+                        compact
+                    />
+                </Grid>
             );
         }
         return <p>Loading Playlists...</p>
