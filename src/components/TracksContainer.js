@@ -1,22 +1,23 @@
 import React from 'react'
+import { Grid } from 'semantic-ui-react'
 import TracksPreview from './TracksPreview'
 import SpotifyPlaylistButtonDropdown from './SpotifyPlaylistButtonDropdown'
 import * as SpotifyFunctions from '../util/spotifyFunctions'
-import { Container, Grid } from 'semantic-ui-react'
+import TracklistTextControls from './TracklistTextControls'
 
-class Track {
-    constructor(id, title, artists) {
-        this.id = id;
-        this.title = title;
-        this.artists = artists;
-    }
-};
+// class Track {
+//     constructor(id, title, artists) {
+//         this.id = id;
+//         this.title = title;
+//         this.artists = artists;
+//     }
+// };
 
-const testTracks = [
-    new Track(0, "shut up", ["Greyson Chance"]),
-    new Track(1, "i'm so tired...", ["Lauv", "Troye Sivan"]),
-    new Track(2, "Honey Whisky", ["SATICA"])
-];
+// const testTracks = [
+//     new Track(0, "shut up", ["Greyson Chance"]),
+//     new Track(1, "i'm so tired...", ["Lauv", "Troye Sivan"]),
+//     new Track(2, "Honey Whisky", ["SATICA"])
+// ];
 
 class TracksContainer extends React.Component {
     state = { tracks: [], accessToken: null, autoId: 0 }
@@ -61,25 +62,28 @@ class TracksContainer extends React.Component {
 
     render() {
         return (
-            <Container>
-                <Grid textAlign='left' stackable>
-                    <Grid.Row>
-                        <Grid.Column style={{ maxWidth: 600 }}>
-                            <h2>Tracks Preview</h2>
-                            <SpotifyPlaylistButtonDropdown
-                                onPlaylistToAdd={this.onSpotifyPlaylistToAdd}
-                                accessToken={this.state.accessToken}
-                            />
-                            <TracksPreview
-                                tracks={this.state.tracks}
-                                onClearTracks={this.onClearTracks}
-                                onRemoveTrack={this.onRemoveTrack}
-                                loginStatus={!this.state.accessToken}
-                            />
-                        </Grid.Column>
-                    </Grid.Row>
-                </Grid>
-            </Container>
+            <Grid textAlign='left' stackable container>
+                <Grid.Row>
+                    <Grid.Column width={8}>
+                        <h2>Tracks Preview</h2>
+                        <SpotifyPlaylistButtonDropdown
+                            onPlaylistToAdd={this.onSpotifyPlaylistToAdd}
+                            accessToken={this.state.accessToken}
+                        />
+                        <TracksPreview
+                            tracks={this.state.tracks}
+                            onClearTracks={this.onClearTracks}
+                            onRemoveTrack={this.onRemoveTrack}
+                            loginStatus={!this.state.accessToken}
+                        />
+                    </Grid.Column>
+                    <Grid.Column width={8}>
+                        <TracklistTextControls
+                            tracks={this.state.tracks}
+                        />
+                    </Grid.Column>
+                </Grid.Row>
+            </Grid>
         );
     }
 }
