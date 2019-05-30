@@ -1,7 +1,13 @@
 import React from 'react'
-import { Segment } from 'semantic-ui-react'
+import { Segment, Button, Grid } from 'semantic-ui-react'
+import { CopyToClipboard } from 'react-copy-to-clipboard'
 
 class TracklistTextView extends React.Component {
+    constructor(props) {
+        super(props);
+        this.text = React.createRef();
+    }
+
     renderArtists = (artists) => {
         if(!artists || artists.length === 0) return '';
         const artistsQuotes = this.props.controls.artistsQuotes;
@@ -64,6 +70,23 @@ class TracklistTextView extends React.Component {
         return s;
     }
 
+    selectText = () => {
+        let node = this.text.current;
+        if (document.body.createTextRange) {
+            const range = document.body.createTextRange();
+            range.moveToElementText(node);
+            range.select();
+        } else if (window.getSelection) {
+            const selection = window.getSelection();
+            const range = document.createRange();
+            range.selectNodeContents(node);
+            selection.removeAllRanges();
+            selection.addRange(range);
+        } else {
+            console.warn("Could not select text: Unsupported browser.");
+        }
+    }
+
     render() {
         return (
             <Segment.Group>
@@ -71,15 +94,29 @@ class TracklistTextView extends React.Component {
                     <h3>Top Tracks Post Text</h3>
                 </Segment>
                 <Segment>
-                    <pre style={{
-                        fontFamily: "Lato,'Helvetica Neue',Arial,Helvetica,sans-serif",
-                        overflowX: "auto",
-                        whiteSpace: "pre-wrap",
-                        wordWrap: "break-word",
-                        minHeight: 150,
-                        marginTop: 0,
-                        marginBottom: 0
-                    }}>
+                    <Grid>
+                        <Grid.Row centered>
+                            <CopyToClipboard text={this.renderTracklistText()}>
+                                <Button
+                                    icon='copy outline'
+                                    labelPosition='left'
+                                    content='Copy to clipboard'
+                                    onClick={this.selectText}
+                                />
+                            </CopyToClipboard>
+                        </Grid.Row>
+                    </Grid>
+                    <pre
+                        ref={this.text}
+                        style={{
+                            fontFamily: "Lato,'Helvetica Neue',Arial,Helvetica,sans-serif",
+                            overflowX: "auto",
+                            whiteSpace: "pre-wrap",
+                            wordWrap: "break-word",
+                            minHeight: 150,
+                            marginBottom: 0
+                        }}
+                    >
                         {this.renderTracklistText()}
                     </pre>
                 </Segment>
