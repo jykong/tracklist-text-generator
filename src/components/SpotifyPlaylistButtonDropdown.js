@@ -64,10 +64,9 @@ class SpotifyPlaylistButtonDropdown extends Component {
                     icon='spotify'
                     content={content}
                     labelPosition='left'
-                    inverted
                     circular
                     size='big'
-                    style={{backgroundColor: '#1DB954'}}
+                    color='green'
                 />
             </Grid.Row>
         );

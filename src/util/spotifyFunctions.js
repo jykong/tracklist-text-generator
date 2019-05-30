@@ -47,24 +47,34 @@ export function setAccessToken(accessToken) {
     spotifyApi.setAccessToken(accessToken);
 }
 
-export async function getUserPlaylists() {
-    //returns an array of objects with playlist name (like "Favorite Smashing Pumpkins jamz")
-    //and the id of the playlist. Use this to feed the playlists selection list
+async function _getUserPlaylists(playlists, options, onFetchUpdate, onFetchError) {
     try {
-        const playlistsResponse = await spotifyApi.getUserPlaylists();
-        //playlistsResponse.items are the actual playlist objects
-        const playlists = playlistsResponse.items.map((playlistObject) => {
-            const {id, name} = playlistObject;
-            return {id: id, playlistName: name}
-        })
-        return playlists
+        const playlistsResponse = await spotifyApi.getUserPlaylists(options);
+        playlistsResponse.items.map(playlistObject => 
+            playlists.push({id: playlistObject.id, playlistName: playlistObject.name})
+        );
+        options.offset += playlistsResponse.limit;
+        let offset = options.offset;
+        const total = playlistsResponse.total;
+        if(offset < total) {
+            _getUserPlaylists(playlists, options, onFetchUpdate, onFetchError);
+        } else {
+            offset = total;
+        }
+        onFetchUpdate(playlists, offset, total);
     }
     catch(err) {
-        //return default array with note that can't download playlists
         console.error('Error: Attempting to get user playlists', err);
         console.error(err.stack);
-        return null
+        onFetchError();
+        return;
     }
+}
+
+export function getUserPlaylists(onFetchUpdate, onFetchError) {
+    let options = { limit: 50, offset: 0 }
+    let playlists = [];
+    _getUserPlaylists(playlists, options, onFetchUpdate, onFetchError);
 }
 
 export async function getPlaylistTracks(playlistId) {

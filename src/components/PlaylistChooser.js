@@ -3,26 +3,43 @@ import * as SpotifyFunctions from '../util/spotifyFunctions'
 import { Button, Dropdown, Grid} from 'semantic-ui-react'
 
 class PlaylistChooser extends React.Component {
-    state = { playlists: null, playlistOptions: null, selectedPlaylist: null, loading: false };
+    state = {
+        playlists: null,
+        playlistOptions: null,
+        selectedPlaylist: null,
+        loadingTracks: false,
+        fetching: null,
+    };
   
-    fetchPlaylists = async () => {
-        const playlists = await SpotifyFunctions.getUserPlaylists();
-        if(!playlists) {
-            this.props.onPlaylistFetchError();
+    onFetchUpdate = (playlists, offset, limit) => {
+        if(offset !== limit) {
+            this.setState({fetching: [offset, limit]});
             return;
         }
-        this.setState({ playlists: playlists });
-        this.setState({ playlistOptions: playlists.map(playlist => (
+        this.setState({ 
+            playlists: playlists,
+            playlistOptions: playlists.map(playlist => (
                 { key: playlist.id, value: playlist.id, text: playlist.playlistName }
-            ))});
+            )),
+            fetching: null
+        });
+    }
+
+    onFetchError = () => {
+        this.setState({fetching: null});
+        this.props.onPlaylistFetchError();
     }
 
     componentDidMount() {
-        if(!this.props.disabled) this.fetchPlaylists();
+        if(!this.props.disabled) {
+            SpotifyFunctions.getUserPlaylists(this.onFetchUpdate, this.onFetchError);
+        }
     }
 
     componentDidUpdate(prevProps) {
-        if(prevProps.disabled && !this.props.disabled) this.fetchPlaylists();
+        if(prevProps.disabled && !this.props.disabled) {
+            SpotifyFunctions.getUserPlaylists(this.onFetchUpdate, this.onFetchError);
+        }
     }
 
     onPlaylistSelected = (e, { value }) => {
@@ -30,17 +47,21 @@ class PlaylistChooser extends React.Component {
     }
 
     onPlaylistToAdd = () => {
-        this.setState({loading: true})
+        this.setState({loadingTracks: true})
         this.props.onPlaylistToAdd(this.state.selectedPlaylist, this.finishLoadingPlaylist);
     }
 
     finishLoadingPlaylist = () => {
-        this.setState({loading: false})
+        this.setState({loadingTracks: false})
     }
 
     renderPlaceholderText = () => {
         if(this.props.disabled) return 'Log in to view playlists';
-        if(!this.state.playlists) return 'Fetching playlists...';
+        if(!this.state.playlists) {
+            if(!this.state.fetching) return 'Fetching playlists...';
+            const [offset, total] = this.state.fetching;
+            return `Fetching playlists... (${offset}/${total})`
+        }
         return 'Select playlist'
     }
 
@@ -55,7 +76,7 @@ class PlaylistChooser extends React.Component {
                     search
                     selection
                     clearable
-                    loading={this.state.loading}
+                    loading={this.state.loadingTracks || this.state.fetching != null}
                 />
                 <Button
                     content='Add Tracks'
