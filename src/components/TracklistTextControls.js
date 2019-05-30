@@ -106,19 +106,23 @@ class TracklistTextControls extends React.Component {
     render() {
         return (
             <div>
-                <h2>Tracklist Text</h2>
-                <Segment>
-                    <Form>
-                        {this.renderNumberingInput()}
-                        {this.renderOrderFirstInput()}
-                        <Form.Group inline>
-                            {this.renderTitleQuotesInput()}
-                            <br />
-                            {this.renderArtistsQuotesInput()}
-                        </Form.Group>
-                        {this.renderDelimiterInput()}
-                    </Form>
-                </Segment>
+                <Segment.Group>
+                    <Segment>
+                        <h3>Format Options</h3>
+                    </Segment>
+                    <Segment>
+                        <Form>
+                            {this.renderNumberingInput()}
+                            {this.renderOrderFirstInput()}
+                            <Form.Group inline>
+                                {this.renderTitleQuotesInput()}
+                                <br />
+                                {this.renderArtistsQuotesInput()}
+                            </Form.Group>
+                            {this.renderDelimiterInput()}
+                        </Form>
+                    </Segment>
+                </Segment.Group>
                 <TracklistTextView
                     tracks={this.props.tracks}
                     urls={this.props.urls}

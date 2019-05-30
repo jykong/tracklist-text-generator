@@ -66,18 +66,24 @@ class TracklistTextView extends React.Component {
 
     render() {
         return (
-            <Segment
-                style={{minHeight: 150}}
-            >
-                <pre style={{
-                    fontFamily: "Lato,'Helvetica Neue',Arial,Helvetica,sans-serif",
-                    overflowX: "auto",
-                    whiteSpace: "pre-wrap",
-                    wordWrap: "break-word"
-                }}>
-                    {this.renderTracklistText()}
-                </pre>
-            </Segment>
+            <Segment.Group>
+                <Segment>
+                    <h3>Top Tracks Post Text</h3>
+                </Segment>
+                <Segment>
+                    <pre style={{
+                        fontFamily: "Lato,'Helvetica Neue',Arial,Helvetica,sans-serif",
+                        overflowX: "auto",
+                        whiteSpace: "pre-wrap",
+                        wordWrap: "break-word",
+                        minHeight: 150,
+                        marginTop: 0,
+                        marginBottom: 0
+                    }}>
+                        {this.renderTracklistText()}
+                    </pre>
+                </Segment>
+            </Segment.Group>
         );
     }
 }

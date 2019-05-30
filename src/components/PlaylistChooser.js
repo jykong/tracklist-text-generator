@@ -1,21 +1,28 @@
-import React, { Component } from 'react'
+import React from 'react'
 import * as SpotifyFunctions from '../util/spotifyFunctions'
-import { Button, Dropdown, Grid } from 'semantic-ui-react'
+import { Button, Dropdown, Grid} from 'semantic-ui-react'
 
-class PlaylistChooser extends Component {
+class PlaylistChooser extends React.Component {
     state = { playlists: null, playlistOptions: null, selectedPlaylist: null, loading: false };
   
-    async componentDidMount() {
-      //await SpotifyFunctions.setAccessToken(this.props.accessToken);
-      const playlists = await SpotifyFunctions.getUserPlaylists();
-      if(!playlists) {
-          this.props.onPlaylistFetchError();
-          return;
-      }
-      this.setState({ playlists: playlists });
-      this.setState({ playlistOptions: playlists.map(playlist => (
-            { key: playlist.id, value: playlist.id, text: playlist.playlistName }
-          ))});
+    fetchPlaylists = async () => {
+        const playlists = await SpotifyFunctions.getUserPlaylists();
+        if(!playlists) {
+            this.props.onPlaylistFetchError();
+            return;
+        }
+        this.setState({ playlists: playlists });
+        this.setState({ playlistOptions: playlists.map(playlist => (
+                { key: playlist.id, value: playlist.id, text: playlist.playlistName }
+            ))});
+    }
+
+    componentDidMount() {
+        if(!this.props.disabled) this.fetchPlaylists();
+    }
+
+    componentDidUpdate(prevProps) {
+        if(prevProps.disabled && !this.props.disabled) this.fetchPlaylists();
     }
 
     onPlaylistSelected = (e, { value }) => {
@@ -31,49 +38,36 @@ class PlaylistChooser extends Component {
         this.setState({loading: false})
     }
 
-    renderAllPlaylists() {
-        return (
-            <ul>
-            {this.state.playlists.map(playlist => (
-                <div>
-                    <li>{playlist.playlistName}</li>
-                    <ul>
-                        <li>{playlist.id}</li>
-                    </ul>
-                </div>
-            ))}
-            </ul>
-        );
+    renderPlaceholderText = () => {
+        if(this.props.disabled) return 'Log in to view playlists';
+        if(!this.state.playlists) return 'Fetching playlists...';
+        return 'Select playlist'
     }
 
     renderPlaylists() {
-        if(this.state.playlists) {
-            return (
-                <Grid padded>
-                    <Dropdown
-                        fluid
-                        options={this.state.playlistOptions}
-                        onChange={this.onPlaylistSelected}
-                        placeholder='Select Playlist'
-                        initialvalue={this.state.selectedPlaylist}
-                        search
-                        selection
-                        clearable
-                        loading={this.state.loading}
-                        style={{ maxWidth: 300 }}
-                    />
-                    <Button
-                        color='green'
-                        onClick={this.onPlaylistToAdd}
-                        content='Add Tracks'
-                        icon='spotify'
-                        labelPosition='left'
-                        compact
-                    />
-                </Grid>
-            );
-        }
-        return <p>Loading Playlists...</p>
+        return (
+            <Grid.Row>
+                <Dropdown
+                    placeholder={this.renderPlaceholderText()}
+                    initialvalue={this.state.selectedPlaylist}
+                    options={this.state.playlistOptions}
+                    onChange={this.onPlaylistSelected}
+                    search
+                    selection
+                    clearable
+                    loading={this.state.loading}
+                />
+                <Button
+                    content='Add Tracks'
+                    onClick={this.onPlaylistToAdd}
+                    icon='spotify'
+                    labelPosition='left'
+                    color='green'
+                    attached='right'
+                    disabled={!this.state.playlists}
+                />
+            </Grid.Row>
+        );
     }
 
     render() {

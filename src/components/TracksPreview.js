@@ -17,7 +17,7 @@ class TracksPreview extends React.Component {
         this.props.onRemoveTrack(value)
     }
 
-    render() {
+    renderContents() {
         if(!this.props.tracks) {
             return (
                 <Segment>
@@ -72,13 +72,18 @@ class TracksPreview extends React.Component {
         return (
             <Segment>
                 <h5>No tracks to display</h5>
-                <p>
-                    {(this.props.loginStatus ?
-                    'Login to Spotify to add tracks from your playlists.' :
-                    'Logged in. Add tracks by selecting a playlist.'
-                    )}
-                </p>
             </Segment>
+        );
+    }
+
+    render() {
+        return (
+            <Segment.Group>
+                <Segment>
+                    <h3>Track List</h3>
+                </Segment>
+                {this.renderContents()}
+            </Segment.Group>
         );
     }
 }

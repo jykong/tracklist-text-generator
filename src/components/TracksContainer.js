@@ -20,7 +20,7 @@ import TracklistTextControls from './TracklistTextControls'
 // ];
 
 class TracksContainer extends React.Component {
-    state = { tracks: [], accessToken: null, autoId: 0 }
+    state = { tracks: [], autoId: 0 }
 
     onSpotifyPlaylistToAdd = async (playlistId, finishLoadingPlaylist) => {
         const fetchedTracks = await SpotifyFunctions.getPlaylistTracks(playlistId);
@@ -52,29 +52,23 @@ class TracksContainer extends React.Component {
         this.setState({tracks: filteredTracks})
     }
 
-    componentDidMount() {
-        const token = SpotifyFunctions.checkUrlForSpotifyAccessToken();
-        if(token) {
-            SpotifyFunctions.setAccessToken(token);
-            this.setState({accessToken: token});
-        }
-    }
+
 
     render() {
         return (
             <Grid textAlign='left' stackable container>
+                <Grid.Row centered>
+                    <h1>GSDJs Top Tracks Post Assistant</h1>
+                </Grid.Row>
                 <Grid.Row>
                     <Grid.Column width={8}>
-                        <h2>Tracks Preview</h2>
                         <SpotifyPlaylistButtonDropdown
                             onPlaylistToAdd={this.onSpotifyPlaylistToAdd}
-                            accessToken={this.state.accessToken}
                         />
                         <TracksPreview
                             tracks={this.state.tracks}
                             onClearTracks={this.onClearTracks}
                             onRemoveTrack={this.onRemoveTrack}
-                            loginStatus={!this.state.accessToken}
                         />
                     </Grid.Column>
                     <Grid.Column width={8}>
