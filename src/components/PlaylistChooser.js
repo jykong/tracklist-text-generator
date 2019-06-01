@@ -4,64 +4,69 @@ import { Button, Dropdown, Grid} from 'semantic-ui-react'
 
 class PlaylistChooser extends React.Component {
     state = {
-        playlists: null,
+        fetchingPlaylists: false,
         playlistOptions: null,
         selectedPlaylist: null,
         loadingTracks: false,
-        fetching: null,
     };
-  
-    onFetchUpdate = (playlists, offset, limit) => {
-        if(offset !== limit) {
-            this.setState({fetching: [offset, limit]});
-            return;
-        }
-        this.setState({ 
-            playlists: playlists,
-            playlistOptions: playlists.map(playlist => (
-                { key: playlist.id, value: playlist.id, text: playlist.playlistName }
-            )),
-            fetching: null
-        });
-    }
-
-    onFetchError = () => {
-        this.setState({fetching: null});
-        this.props.onPlaylistFetchError();
-    }
 
     componentDidMount() {
         if(!this.props.disabled) {
-            SpotifyFunctions.getUserPlaylists(this.onFetchUpdate, this.onFetchError);
+            SpotifyFunctions.getUserPlaylists(this.onPlaylistFetchUpdate, this.onFetchError);
         }
     }
 
     componentDidUpdate(prevProps) {
         if(prevProps.disabled && !this.props.disabled) {
-            SpotifyFunctions.getUserPlaylists(this.onFetchUpdate, this.onFetchError);
+            SpotifyFunctions.getUserPlaylists(this.onPlaylistFetchUpdate, this.onFetchError);
         }
+    }
+  
+    onPlaylistFetchUpdate = (playlists, offset, total) => {
+        if(offset !== total) {
+            this.props.updateStatusMsg(`Fetching playlists... (${offset}/${total})`);
+            return;
+        }
+        this.setState({
+            playlistOptions: playlists.map(playlist => (
+                { key: playlist.id, value: playlist.id, text: playlist.playlistName }
+            )),
+            fetchingPlaylists: null
+        });
+        this.props.updateStatusMsg('')
+    }
+
+    onFetchError = () => {
+        this.setState({ loadingTracks: false, fetching: false });
+        this.props.onFetchError();
     }
 
     onPlaylistSelected = (e, { value }) => {
-        this.setState({selectedPlaylist: value});
+        this.setState({ selectedPlaylist: value });
     }
 
     onPlaylistToAdd = () => {
-        this.setState({loadingTracks: true})
-        this.props.onPlaylistToAdd(this.state.selectedPlaylist, this.finishLoadingPlaylist);
+        this.setState({ loadingTracks: true })
+        SpotifyFunctions.getPlaylistTracks(
+            this.state.selectedPlaylist, 
+            this.onTracksLoadUpdate, 
+            this.onFetchError
+        )
     }
 
-    finishLoadingPlaylist = () => {
-        this.setState({loadingTracks: false})
+    onTracksLoadUpdate = (tracks, offset, total) => {
+        if(offset !== total) {
+            this.props.updateStatusMsg(`Loading tracks... (${offset}/${total})`);
+            return;
+        }
+        this.props.onTracksToAdd(tracks);
+        this.setState({ loadingTracks: false });
+        this.props.updateStatusMsg('')
     }
 
     renderPlaceholderText = () => {
         if(this.props.disabled) return 'Log in to view playlists';
-        if(!this.state.playlists) {
-            if(!this.state.fetching) return 'Fetching playlists...';
-            const [offset, total] = this.state.fetching;
-            return `Fetching playlists... (${offset}/${total})`
-        }
+        if(this.state.fetchingPlaylists) return 'Fetching playlists...';
         return 'Select playlist'
     }
 
@@ -76,7 +81,7 @@ class PlaylistChooser extends React.Component {
                     search
                     selection
                     clearable
-                    loading={this.state.loadingTracks || this.state.fetching != null}
+                    loading={this.state.loadingTracks || this.state.fetchingPlaylists}
                 />
                 <Button
                     content='Add Tracks'
@@ -85,7 +90,7 @@ class PlaylistChooser extends React.Component {
                     labelPosition='left'
                     color='green'
                     attached='right'
-                    disabled={!this.state.playlists}
+                    disabled={!this.state.playlistOptions}
                 />
             </Grid.Row>
         );

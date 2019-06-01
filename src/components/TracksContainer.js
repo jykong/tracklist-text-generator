@@ -1,8 +1,7 @@
 import React from 'react'
 import { Grid } from 'semantic-ui-react'
 import TracksPreview from './TracksPreview'
-import SpotifyPlaylistButtonDropdown from './SpotifyPlaylistButtonDropdown'
-import * as SpotifyFunctions from '../util/spotifyFunctions'
+import TracksFromSpotifyPlaylist from './TracksFromSpotifyPlaylist'
 import TracklistTextControls from './TracklistTextControls'
 
 // class Track {
@@ -22,12 +21,7 @@ import TracklistTextControls from './TracklistTextControls'
 class TracksContainer extends React.Component {
     state = { tracks: [], autoId: 0 }
 
-    onSpotifyPlaylistToAdd = async (playlistId, finishLoadingPlaylist) => {
-        const fetchedTracks = await SpotifyFunctions.getPlaylistTracks(playlistId);
-        if(!fetchedTracks) {
-            finishLoadingPlaylist();
-            return;
-        }
+    onTracksToAdd = (fetchedTracks) => {
         let autoId = this.state.autoId;
         const newTracks = fetchedTracks.map(track => ({
             id: autoId++,
@@ -38,7 +32,6 @@ class TracksContainer extends React.Component {
             newTracks :
             [...this.state.tracks, ...newTracks])
         this.setState({tracks: tracks, autoId: autoId});
-        finishLoadingPlaylist();
     }
 
     onClearTracks = () => {
@@ -52,8 +45,6 @@ class TracksContainer extends React.Component {
         this.setState({tracks: filteredTracks})
     }
 
-
-
     render() {
         return (
             <Grid textAlign='left' stackable container>
@@ -62,8 +53,8 @@ class TracksContainer extends React.Component {
                 </Grid.Row>
                 <Grid.Row>
                     <Grid.Column width={8}>
-                        <SpotifyPlaylistButtonDropdown
-                            onPlaylistToAdd={this.onSpotifyPlaylistToAdd}
+                        <TracksFromSpotifyPlaylist
+                            onTracksToAdd={this.onTracksToAdd}
                         />
                         <TracksPreview
                             tracks={this.state.tracks}

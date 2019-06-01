@@ -47,24 +47,27 @@ export function setAccessToken(accessToken) {
     spotifyApi.setAccessToken(accessToken);
 }
 
-async function _getUserPlaylists(playlists, options, onFetchUpdate, onFetchError) {
+const _request = {
+    'user playlists': spotifyApi.getUserPlaylists,
+    'playlist tracks': spotifyApi.getPlaylistTracks
+};
+
+async function _getListOfItems(listType, id, list, itemMapper, options, onFetchUpdate, onFetchError) {
     try {
-        const playlistsResponse = await spotifyApi.getUserPlaylists(options);
-        playlistsResponse.items.map(playlistObject => 
-            playlists.push({id: playlistObject.id, playlistName: playlistObject.name})
-        );
-        options.offset += playlistsResponse.limit;
+        const response = !id ? await _request[listType](options) : await _request[listType](id, options); 
+        response.items.map(itemMapper(list));
+        options.offset += response.limit;
         let offset = options.offset;
-        const total = playlistsResponse.total;
+        const total = response.total;
         if(offset < total) {
-            _getUserPlaylists(playlists, options, onFetchUpdate, onFetchError);
+            _getListOfItems(listType, id, list, itemMapper, options, onFetchUpdate, onFetchError);
         } else {
             offset = total;
         }
-        onFetchUpdate(playlists, offset, total);
+        onFetchUpdate(list, offset, total);
     }
     catch(err) {
-        console.error('Error: Attempting to get user playlists', err);
+        console.error(`Error: Attempting to get ${listType}`, err);
         console.error(err.stack);
         onFetchError();
         return;
@@ -72,25 +75,25 @@ async function _getUserPlaylists(playlists, options, onFetchUpdate, onFetchError
 }
 
 export function getUserPlaylists(onFetchUpdate, onFetchError) {
-    let options = { limit: 50, offset: 0 }
     let playlists = [];
-    _getUserPlaylists(playlists, options, onFetchUpdate, onFetchError);
+    const playlistsMapper = (list) => {
+        return (obj) => list.push({
+            id: obj.id,
+            playlistName: obj.name
+        })
+    };
+    let options = { limit: 50, offset: 0 };
+    _getListOfItems('user playlists', null, playlists, playlistsMapper, options, onFetchUpdate, onFetchError);
 }
 
-export async function getPlaylistTracks(playlistId) {
-    try {
-        const playlistTracksResponse = await spotifyApi.getPlaylistTracks(playlistId);
-        return playlistTracksResponse.items.map(trackObject => {
-            return {
-                title: trackObject.track.name,
-                artists: trackObject.track.artists.map(artist => artist.name)
-            }
-        });
-
-    }
-    catch(err) {
-        console.error('Error: Attempting to get playlist tracks', err);
-        console.error(err.stack);
-        return null
-    }
+export function getPlaylistTracks(playlistId, onFetchUpdate, onFetchError) {
+    let tracks = [];
+    const tracksMapper = (list) => {
+        return (obj) => list.push({
+            title: obj.track.name,
+            artists: obj.track.artists.map(artist => artist.name)
+        })
+    };
+    let options = { limit: 50, offset: 0};
+    _getListOfItems('playlist tracks', playlistId, tracks, tracksMapper, options, onFetchUpdate, onFetchError);
 }
