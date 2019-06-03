@@ -1,5 +1,5 @@
 import React from 'react'
-import { Grid, Header } from 'semantic-ui-react'
+import { Grid, Header, Label, List, Modal } from 'semantic-ui-react'
 import TracksPreview from './TracksPreview'
 import TracksFromSpotifyPlaylist from './TracksFromSpotifyPlaylist'
 import TracklistTextControls from './TracklistTextControls'
@@ -59,7 +59,40 @@ class TracksContainer extends React.Component {
             <Grid textAlign='left' stackable container>\
                 <Grid.Row centered>
                     <Header as='h1' textAlign='center'>
-                        GSDJs Top Tracks Post Assistant
+                        GSDJs Post Helper
+                        <Header.Subheader>
+                            <Modal
+                                closeIcon
+                                trigger={<Label as='a' basic content='About / Help'/>}
+                            >
+                                <Modal.Header>About / Help</Modal.Header>
+                                <Modal.Content>
+                                    <p>
+                                        GSDJs Post Helper is a simple web app that allows
+                                        users to select a Spotify playlist and then have its
+                                        track list text automatically generated.
+                                    </p>
+                                    <p>
+                                        To use the app, follow these instructions:
+                                    </p>
+                                    <List ordered>
+                                        <List.Item>Login to Spotify.</List.Item>
+                                        <List.Item>Select a playlist.</List.Item>
+                                        <List.Item>Click "Add Tracks".</List.Item>
+                                        <List.Item>Customize the post text using the Format Options.</List.Item>
+                                        <List.Item>Click "Copy to clipboard" to copy the post text.</List.Item>
+                                        <List.Item>Paste the text into a post on the GSDJ group page.</List.Item>
+                                    </List>
+                                    <p>
+                                        The app was developed by James Kong as a self-guided
+                                        demonstration project to help with learning web development.
+                                        The app is written using <a href='https://reactjs.org/'>react</a>
+                                        &nbsp;and <a href='https://react.semantic-ui.com/'>semantic-ui-react</a>.
+                                    </p>
+                                </Modal.Content>
+                            </Modal>
+                            
+                        </Header.Subheader>
                     </Header>
                 </Grid.Row>
                 <Grid.Row>
