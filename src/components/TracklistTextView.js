@@ -65,8 +65,8 @@ class TracklistTextView extends React.Component {
             s += this.renderTitleArtist(tracks[i]);
             s += '\n'
         }
-        if(!this.props.urls) return s;
-        this.props.urls.map(url => s += url + '\n')
+        if(!this.props.url || !this.props.controls.includeUrl) return s;
+        s += '\n' + this.props.url + '\n';
         return s;
     }
 
@@ -102,6 +102,8 @@ class TracklistTextView extends React.Component {
                                     labelPosition='left'
                                     content='Copy to clipboard'
                                     onClick={this.selectText}
+                                    disabled={(!this.props.tracks || this.props.tracks.length === 0)
+                                        && (!this.props.url || !this.props.controls.includeUrl)}
                                 />
                             </CopyToClipboard>
                         </Grid.Row>
@@ -113,7 +115,6 @@ class TracklistTextView extends React.Component {
                             overflowX: "auto",
                             whiteSpace: "pre-wrap",
                             wordWrap: "break-word",
-                            minHeight: 150,
                             marginBottom: 0
                         }}
                     >

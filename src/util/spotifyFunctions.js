@@ -74,26 +74,28 @@ async function _getListOfItems(listType, id, list, itemMapper, options, onFetchU
     }
 }
 
-export function getUserPlaylists(onFetchUpdate, onFetchError) {
+export async function getUserPlaylists(onFetchUpdate, onFetchError) {
     let playlists = [];
     const playlistsMapper = (list) => {
         return (obj) => list.push({
             id: obj.id,
-            playlistName: obj.name
+            playlistName: obj.name,
+            url: obj.external_urls.spotify
         })
     };
     let options = { limit: 50, offset: 0 };
-    _getListOfItems('user playlists', null, playlists, playlistsMapper, options, onFetchUpdate, onFetchError);
+    await _getListOfItems('user playlists', null, playlists, playlistsMapper, options, onFetchUpdate, onFetchError);
 }
 
-export function getPlaylistTracks(playlistId, onFetchUpdate, onFetchError) {
+export async function getPlaylistTracks(playlistId, onFetchUpdate, onFetchError) {
     let tracks = [];
     const tracksMapper = (list) => {
         return (obj) => list.push({
+            id: obj.track.id,
             title: obj.track.name,
             artists: obj.track.artists.map(artist => artist.name)
         })
     };
     let options = { limit: 50, offset: 0};
-    _getListOfItems('playlist tracks', playlistId, tracks, tracksMapper, options, onFetchUpdate, onFetchError);
+    await _getListOfItems('playlist tracks', playlistId, tracks, tracksMapper, options, onFetchUpdate, onFetchError);
 }

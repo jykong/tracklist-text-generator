@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import * as SpotifyFunctions from '../util/spotifyFunctions.js';
-import { Button, Grid, Segment } from 'semantic-ui-react';
+import { Button, Grid, Segment, Label, Table } from 'semantic-ui-react';
 import PlaylistChooser from './PlaylistChooser';
 import store from 'store'
 
@@ -18,7 +18,12 @@ const buttonConfig = {
 }
 
 class TracksFromSpotifyPlaylist extends Component {
-    state = { accessToken: null, fetchError: null, statusMsg: '' };
+    state = {
+        accessToken: null,
+        fetchError: null,
+        statusMsg: '',
+        playlist: null
+    };
 
     componentDidMount() {
         // Check URL for access token
@@ -47,6 +52,18 @@ class TracksFromSpotifyPlaylist extends Component {
         window.location.href = 'http://localhost:3000/';
     }
 
+    addPlaylist = (playlist, tracks) => {
+        this.setState({ playlist: playlist });
+        this.props.addUrl(playlist.url);
+        this.props.addTracks(tracks);
+    }
+
+    removePlaylist = (e, {value}) => {
+        this.setState({ playlist: null });
+        this.props.removeUrl();
+        this.props.removeTracks();
+    }
+
     onFetchError = () => {
         store.remove('token');
         this.setState({
@@ -65,7 +82,6 @@ class TracksFromSpotifyPlaylist extends Component {
     
     renderButton = () => {
         const { buttonType, link, content } = buttonConfig[!this.state.accessToken];
-
         return (
             <Grid.Row>
                 <Button
@@ -83,6 +99,36 @@ class TracksFromSpotifyPlaylist extends Component {
         );
     }
 
+    renderPlaylists = () => {
+        if(!this.state.playlist) return;
+        return (
+            <Table
+                style={{border: 'none', 
+                    borderTop: '1px solid rgba(34,36,38,.15)',
+                    margin: 0
+                }}
+            >
+                <Table.Body>
+                    <Table.Row>
+                        <Table.Cell collapsing>
+                            <h4>Playlist Added:</h4>
+                        </Table.Cell>
+                        <Table.Cell>
+                            <Label 
+                                key={this.state.playlist.key}
+                                value={this.state.playlist.value}
+                                onRemove={this.removePlaylist}
+                                content={this.state.playlist.text}
+                                color='blue'
+                                size='large'
+                            />
+                        </Table.Cell>
+                    </Table.Row>
+                </Table.Body>
+            </Table>
+        );
+    }
+
     render() {
         return (
             <Segment.Group>
@@ -93,8 +139,9 @@ class TracksFromSpotifyPlaylist extends Component {
                     <Grid centered>
                         {this.renderButton()}
                         <PlaylistChooser
-                            disabled={!this.state.accessToken}
-                            onTracksToAdd={this.props.onTracksToAdd}
+                            refreshPlaylists={this.state.accessToken !== null}
+                            disabled={!this.state.accessToken || this.state.playlist !== null}
+                            addPlaylist={this.addPlaylist}
                             onFetchError={this.onFetchError}
                             updateStatusMsg={this.updateStatusMsg}
                         />
@@ -103,6 +150,7 @@ class TracksFromSpotifyPlaylist extends Component {
                         </Grid.Row>
                     </Grid>
                 </Segment>
+                {this.renderPlaylists()}
             </Segment.Group>
         );
     }

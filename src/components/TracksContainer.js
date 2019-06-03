@@ -19,30 +19,39 @@ import TracklistTextControls from './TracklistTextControls'
 // ];
 
 class TracksContainer extends React.Component {
-    state = { tracks: [], autoId: 0 }
+    state = { tracks: [], autoId: 0, url: null }
 
-    onTracksToAdd = (fetchedTracks) => {
-        let autoId = this.state.autoId;
+    addTracks = (fetchedTracks) => {
         const newTracks = fetchedTracks.map(track => ({
-            id: autoId++,
+            id: track.id,
             title: track.title,
-            artists: track.artists
+            artists: track.artists,
+            type: 'playlist'
         }));
         const tracks = (this.state.tracks.length === 0 ?
             newTracks :
             [...this.state.tracks, ...newTracks])
-        this.setState({tracks: tracks, autoId: autoId});
+        this.setState({ tracks: tracks });
     }
 
-    onClearTracks = () => {
-        this.setState({tracks: []})
+    removeTracks = () => {
+        this.setState({ tracks: this.state.tracks.filter(track => (
+            track.type !== 'playlist')) })
     }
 
     onRemoveTrack = (id) => {
         const filteredTracks = this.state.tracks.filter(track => {
             return track.id !== id
         })
-        this.setState({tracks: filteredTracks})
+        this.setState({ tracks: filteredTracks })
+    }
+
+    addUrl = (url) => {
+        this.setState({ url: url });
+    }
+
+    removeUrl = () => {
+        this.setState({ url: null })
     }
 
     render() {
@@ -54,17 +63,20 @@ class TracksContainer extends React.Component {
                 <Grid.Row>
                     <Grid.Column width={8}>
                         <TracksFromSpotifyPlaylist
-                            onTracksToAdd={this.onTracksToAdd}
+                            addTracks={this.addTracks}
+                            removeTracks={this.removeTracks}
+                            addUrl={this.addUrl}
+                            removeUrl={this.removeUrl}
                         />
                         <TracksPreview
                             tracks={this.state.tracks}
-                            onClearTracks={this.onClearTracks}
                             onRemoveTrack={this.onRemoveTrack}
                         />
                     </Grid.Column>
                     <Grid.Column width={8}>
                         <TracklistTextControls
                             tracks={this.state.tracks}
+                            url={this.state.url}
                         />
                     </Grid.Column>
                 </Grid.Row>

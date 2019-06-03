@@ -8,7 +8,8 @@ class TracklistTextControls extends React.Component {
         delimiter: '-',
         orderFirst: 'title',
         titleQuotes: true,
-        artistsQuotes: false
+        artistsQuotes: false,
+        includeUrl: true
     };
 
     onNumberingChange = (e, { value }) => this.setState({ numbering: value })
@@ -16,6 +17,7 @@ class TracklistTextControls extends React.Component {
     onTitleQuotesChange = () => this.setState({ titleQuotes: !this.state.titleQuotes })
     onArtistsQuotesChange = () => this.setState({ artistsQuotes: !this.state.artistsQuotes })
     onDelimiterChange = (e, { value }) => this.setState({ delimiter: value })
+    onIncludeUrlChange = () => this.setState({ includeUrl: !this.state.includeUrl })
 
     renderNumberingInput = () => {
         return (
@@ -103,6 +105,17 @@ class TracklistTextControls extends React.Component {
         )
     }
 
+    renderIncludeUrlInput = () => {
+        return (
+            <Form.Checkbox
+                toggle
+                label='Playlist URL'
+                checked={this.state.includeUrl}
+                onChange={this.onIncludeUrlChange}
+            />
+        );
+    }
+
     render() {
         return (
             <div>
@@ -110,14 +123,14 @@ class TracklistTextControls extends React.Component {
                     <Segment>
                         <h3>Format Options</h3>
                     </Segment>
-                    <Segment>
+                    <Segment style={{paddingBottom: 0}}>
                         <Form>
                             {this.renderNumberingInput()}
                             {this.renderOrderFirstInput()}
-                            <Form.Group inline>
+                            <Form.Group widths={3}>
                                 {this.renderTitleQuotesInput()}
-                                <br />
                                 {this.renderArtistsQuotesInput()}
+                                {this.renderIncludeUrlInput()}
                             </Form.Group>
                             {this.renderDelimiterInput()}
                         </Form>
@@ -125,7 +138,7 @@ class TracklistTextControls extends React.Component {
                 </Segment.Group>
                 <TracklistTextView
                     tracks={this.props.tracks}
-                    urls={this.props.urls}
+                    url={this.props.url}
                     controls={this.state}
                 />
             </div>

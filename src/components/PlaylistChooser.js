@@ -7,17 +7,18 @@ class PlaylistChooser extends React.Component {
         fetchingPlaylists: false,
         playlistOptions: null,
         selectedPlaylist: null,
+        playlistToAdd: null,
         loadingTracks: false,
     };
 
     componentDidMount() {
-        if(!this.props.disabled) {
+        if(this.props.refreshPlaylists) {
             SpotifyFunctions.getUserPlaylists(this.onPlaylistFetchUpdate, this.onFetchError);
         }
     }
 
     componentDidUpdate(prevProps) {
-        if(prevProps.disabled && !this.props.disabled) {
+        if(!prevProps.refreshPlaylists && this.props.refreshPlaylists) {
             SpotifyFunctions.getUserPlaylists(this.onPlaylistFetchUpdate, this.onFetchError);
         }
     }
@@ -28,9 +29,12 @@ class PlaylistChooser extends React.Component {
             return;
         }
         this.setState({
-            playlistOptions: playlists.map(playlist => (
-                { key: playlist.id, value: playlist.id, text: playlist.playlistName }
-            )),
+            playlistOptions: playlists.map(playlist => ({
+                key: playlist.id,
+                value: playlist.id,
+                text: playlist.playlistName,
+                url: playlist.url
+            })),
             fetchingPlaylists: null
         });
         this.props.updateStatusMsg('')
@@ -45,13 +49,16 @@ class PlaylistChooser extends React.Component {
         this.setState({ selectedPlaylist: value });
     }
 
-    onPlaylistToAdd = () => {
-        this.setState({ loadingTracks: true })
+    onPlaylistToAdd = async () => {
+        const playlistToAdd = this.state.playlistOptions.filter(playlist => (
+            playlist.value === this.state.selectedPlaylist
+        ))[0];
+        this.setState({ loadingTracks: true, playlistToAdd: playlistToAdd });
         SpotifyFunctions.getPlaylistTracks(
             this.state.selectedPlaylist, 
             this.onTracksLoadUpdate, 
             this.onFetchError
-        )
+        );
     }
 
     onTracksLoadUpdate = (tracks, offset, total) => {
@@ -59,13 +66,13 @@ class PlaylistChooser extends React.Component {
             this.props.updateStatusMsg(`Loading tracks... (${offset}/${total})`);
             return;
         }
-        this.props.onTracksToAdd(tracks);
+        this.props.addPlaylist(this.state.playlistToAdd, tracks);
         this.setState({ loadingTracks: false });
         this.props.updateStatusMsg('')
     }
 
     renderPlaceholderText = () => {
-        if(this.props.disabled) return 'Log in to view playlists';
+        if(!this.props.refreshPlaylists) return 'Log in to view playlists';
         if(this.state.fetchingPlaylists) return 'Fetching playlists...';
         return 'Select playlist'
     }
@@ -80,8 +87,9 @@ class PlaylistChooser extends React.Component {
                     onChange={this.onPlaylistSelected}
                     search
                     selection
-                    clearable
                     loading={this.state.loadingTracks || this.state.fetchingPlaylists}
+                    disabled={this.props.disabled || !this.state.playlistOptions || 
+                        this.state.loadingTracks}
                 />
                 <Button
                     content='Add Tracks'
@@ -90,7 +98,8 @@ class PlaylistChooser extends React.Component {
                     labelPosition='left'
                     color='green'
                     attached='right'
-                    disabled={!this.state.playlistOptions}
+                    disabled={this.props.disabled || !this.state.playlistOptions || 
+                        this.state.loadingTracks || !this.state.selectedPlaylist}
                 />
             </Grid.Row>
         );

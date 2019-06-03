@@ -38,11 +38,6 @@ class TracksPreview extends React.Component {
                             Artist
                         </Table.HeaderCell>
                         <Table.HeaderCell width={1} style={headerCellStyle}>
-                            <Button compact basic onClick={this.props.onClearTracks}
-                                style={buttonStyle}
-                            >
-                                Clear
-                            </Button>
                         </Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>
@@ -56,6 +51,7 @@ class TracksPreview extends React.Component {
                                 {this.renderArtists(track.artists)}
                             </Table.Cell>
                             <Table.Cell width={1} textAlign='right'  style={cellStyle}>
+                                {track.type !== 'playlist' ?
                                 <Button
                                     icon basic compact
                                     onClick={this.onRemoveTrack}
@@ -68,6 +64,7 @@ class TracksPreview extends React.Component {
                                         link
                                     />
                                 </Button>
+                                : <div/>}
                             </Table.Cell>
                         </Table.Row>
                     )}
