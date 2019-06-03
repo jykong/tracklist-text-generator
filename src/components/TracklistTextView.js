@@ -1,5 +1,5 @@
 import React from 'react'
-import { Segment, Button, Grid } from 'semantic-ui-react'
+import { Segment, Button, Grid, Header } from 'semantic-ui-react'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 
 class TracklistTextView extends React.Component {
@@ -91,7 +91,7 @@ class TracklistTextView extends React.Component {
         return (
             <Segment.Group>
                 <Segment>
-                    <h3>Top Tracks Post Text</h3>
+                    <Header as='h3'>Top Tracks Post Text</Header>
                 </Segment>
                 <Segment>
                     <Grid>

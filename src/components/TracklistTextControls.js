@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Input, Segment } from 'semantic-ui-react'
+import { Form, Header, Input, Segment } from 'semantic-ui-react'
 import TracklistTextView from './TracklistTextView'
 
 class TracklistTextControls extends React.Component {
@@ -121,7 +121,7 @@ class TracklistTextControls extends React.Component {
             <div>
                 <Segment.Group>
                     <Segment>
-                        <h3>Format Options</h3>
+                        <Header as='h3'>Format Options</Header>
                     </Segment>
                     <Segment style={{paddingBottom: 0}}>
                         <Form>

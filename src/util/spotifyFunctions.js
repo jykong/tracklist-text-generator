@@ -4,14 +4,10 @@ const spotifyApi = new Spotify();
 
 export function redirectUrlToSpotifyForLogin(){
     const CLIENT_ID = "66d3bab0942840bbafc35c603d66f78a";
-    const REDIRECT_URI = "http://localhost:3000";
+    const REDIRECT_URI = 'http://' + window.location.hostname + ':3000/';
     const scopes = [
-    "user-modify-playback-state",
-    "user-library-read",
-    "user-library-modify",
-    "playlist-read-private",
-    "playlist-modify-public",
-    "playlist-modify-private"];
+        "playlist-read-private",
+    ];
     return 'https://accounts.spotify.com/authorize?client_id=' + CLIENT_ID +
       '&redirect_uri=' + encodeURIComponent(REDIRECT_URI) +
       '&scope=' + encodeURIComponent(scopes.join(' ')) +

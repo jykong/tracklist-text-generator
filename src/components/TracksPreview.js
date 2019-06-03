@@ -1,5 +1,5 @@
 import React from 'react'
-import { Segment, Table, Icon, Button } from 'semantic-ui-react'
+import { Segment, Table, Icon, Button, Header } from 'semantic-ui-react'
 
 class TracksPreview extends React.Component {
     onRemoveTrack = (e, {value}) => {
@@ -64,7 +64,7 @@ class TracksPreview extends React.Component {
                                         link
                                     />
                                 </Button>
-                                : <div/>}
+                                : ''}
                             </Table.Cell>
                         </Table.Row>
                     )}
@@ -73,31 +73,18 @@ class TracksPreview extends React.Component {
         )
     }
 
-    renderContents() {
-        if(!this.props.tracks) {
-            return (
-                <Segment>
-                    Loading...
-                </Segment>
-            );
-        }
-        if(this.props.tracks.length > 0) {
-            return this.renderTable();
-        }
-        return (
-            <Segment>
-                <h5>No tracks to display</h5>
-            </Segment>
-        );
-    }
-
     render() {
         return (
             <Segment.Group>
                 <Segment>
-                    <h3>Track List</h3>
+                    <Header as='h3'>
+                        Track List
+                        <Header.Subheader>
+                            {this.props.tracks.length} songs
+                        </Header.Subheader>
+                    </Header>
                 </Segment>
-                {this.renderContents()}
+                {this.props.tracks.length > 0 ? this.renderTable() : ''}
             </Segment.Group>
         );
     }

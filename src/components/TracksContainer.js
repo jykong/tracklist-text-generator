@@ -1,5 +1,5 @@
 import React from 'react'
-import { Grid } from 'semantic-ui-react'
+import { Grid, Header } from 'semantic-ui-react'
 import TracksPreview from './TracksPreview'
 import TracksFromSpotifyPlaylist from './TracksFromSpotifyPlaylist'
 import TracklistTextControls from './TracklistTextControls'
@@ -56,9 +56,11 @@ class TracksContainer extends React.Component {
 
     render() {
         return (
-            <Grid textAlign='left' stackable container>
+            <Grid textAlign='left' stackable container>\
                 <Grid.Row centered>
-                    <h1>GSDJs Top Tracks Post Assistant</h1>
+                    <Header as='h1' textAlign='center'>
+                        GSDJs Top Tracks Post Assistant
+                    </Header>
                 </Grid.Row>
                 <Grid.Row>
                     <Grid.Column width={8}>

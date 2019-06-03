@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import * as SpotifyFunctions from '../util/spotifyFunctions.js';
-import { Button, Grid, Segment, Label, Table } from 'semantic-ui-react';
+import { Button, Grid, Segment, Label, Table, Header } from 'semantic-ui-react';
 import PlaylistChooser from './PlaylistChooser';
 import store from 'store'
 
@@ -49,7 +49,8 @@ class TracksFromSpotifyPlaylist extends Component {
         }
         // Log Out
         store.remove('token');
-        window.location.href = 'http://localhost:3000/';
+        //window.location.href = 'http://localhost:3000/';
+        window.location.href = 'http://' + window.location.hostname + ':3000/';
     }
 
     addPlaylist = (playlist, tracks) => {
@@ -133,7 +134,7 @@ class TracksFromSpotifyPlaylist extends Component {
         return (
             <Segment.Group>
                 <Segment>
-                    <h3>Add Tracks from Playlist</h3>
+                    <Header as='h3'>Add Tracks from Playlist</Header>
                 </Segment>
                 <Segment>
                     <Grid centered>
