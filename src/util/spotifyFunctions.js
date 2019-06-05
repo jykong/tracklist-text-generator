@@ -3,8 +3,8 @@ import Spotify from 'spotify-web-api-js'
 const spotifyApi = new Spotify();
 
 export function redirectUrlToSpotifyForLogin(){
-    const CLIENT_ID = "66d3bab0942840bbafc35c603d66f78a";
-    const REDIRECT_URI = 'http://' + window.location.hostname + ':3000/';
+    const CLIENT_ID = process.env.REACT_APP_SPOTIFY_ID;
+    const REDIRECT_URI = process.env.REACT_APP_REDIRECT_URI;
     const scopes = [
         "playlist-read-private",
     ];

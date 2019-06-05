@@ -92,7 +92,7 @@ class PlaylistChooser extends React.Component {
                         this.state.loadingTracks}
                 />
                 <Button
-                    content='Add Tracks'
+                    content='Get Tracks'
                     onClick={this.onPlaylistToAdd}
                     icon='spotify'
                     labelPosition='left'

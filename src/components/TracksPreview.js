@@ -78,7 +78,7 @@ class TracksPreview extends React.Component {
             <Segment.Group>
                 <Segment>
                     <Header as='h3'>
-                        Track List
+                        Tracklist
                         <Header.Subheader>
                             {this.props.tracks.length} songs
                         </Header.Subheader>

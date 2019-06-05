@@ -1,25 +1,12 @@
 import React from 'react'
-import { Grid, Header, Label, List, Modal } from 'semantic-ui-react'
+import { Grid, Header } from 'semantic-ui-react'
+import AboutHelp from './AboutHelp'
 import TracksPreview from './TracksPreview'
 import TracksFromSpotifyPlaylist from './TracksFromSpotifyPlaylist'
 import TracklistTextControls from './TracklistTextControls'
 
-// class Track {
-//     constructor(id, title, artists) {
-//         this.id = id;
-//         this.title = title;
-//         this.artists = artists;
-//     }
-// };
-
-// const testTracks = [
-//     new Track(0, "shut up", ["Greyson Chance"]),
-//     new Track(1, "i'm so tired...", ["Lauv", "Troye Sivan"]),
-//     new Track(2, "Honey Whisky", ["SATICA"])
-// ];
-
 class TracksContainer extends React.Component {
-    state = { tracks: [], autoId: 0, url: null }
+    state = { tracks: [], url: null }
 
     addTracks = (fetchedTracks) => {
         const newTracks = fetchedTracks.map(track => ({
@@ -59,39 +46,9 @@ class TracksContainer extends React.Component {
             <Grid textAlign='left' stackable container>\
                 <Grid.Row centered>
                     <Header as='h1' textAlign='center'>
-                        GSDJs Post Helper
+                        Tracklist Text Generator
                         <Header.Subheader>
-                            <Modal
-                                closeIcon
-                                trigger={<Label as='a' basic content='About / Help'/>}
-                            >
-                                <Modal.Header>About / Help</Modal.Header>
-                                <Modal.Content>
-                                    <p>
-                                        GSDJs Post Helper is a simple web app that allows
-                                        users to select a Spotify playlist and then have its
-                                        track list text automatically generated.
-                                    </p>
-                                    <p>
-                                        To use the app, follow these instructions:
-                                    </p>
-                                    <List ordered>
-                                        <List.Item>Login to Spotify.</List.Item>
-                                        <List.Item>Select a playlist.</List.Item>
-                                        <List.Item>Click "Add Tracks".</List.Item>
-                                        <List.Item>Customize the post text using the Format Options.</List.Item>
-                                        <List.Item>Click "Copy to clipboard" to copy the post text.</List.Item>
-                                        <List.Item>Paste the text into a post on the GSDJ group page.</List.Item>
-                                    </List>
-                                    <p>
-                                        The app was developed by James Kong as a self-guided
-                                        demonstration project to help with learning web development.
-                                        The app is written using <a href='https://reactjs.org/'>react</a>
-                                        &nbsp;and <a href='https://react.semantic-ui.com/'>semantic-ui-react</a>.
-                                    </p>
-                                </Modal.Content>
-                            </Modal>
-                            
+                            <AboutHelp />
                         </Header.Subheader>
                     </Header>
                 </Grid.Row>

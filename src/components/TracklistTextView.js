@@ -91,7 +91,7 @@ class TracklistTextView extends React.Component {
         return (
             <Segment.Group>
                 <Segment>
-                    <Header as='h3'>Post Text</Header>
+                    <Header as='h3'>Tracklist Text</Header>
                 </Segment>
                 <Segment>
                     <Grid>

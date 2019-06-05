@@ -134,7 +134,7 @@ class TracksFromSpotifyPlaylist extends Component {
         return (
             <Segment.Group>
                 <Segment>
-                    <Header as='h3'>Add Tracks from Playlist</Header>
+                    <Header as='h3'>Get Tracks from Playlist</Header>
                 </Segment>
                 <Segment>
                     <Grid centered>
