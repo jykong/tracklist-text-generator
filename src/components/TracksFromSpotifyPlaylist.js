@@ -49,8 +49,7 @@ class TracksFromSpotifyPlaylist extends Component {
         }
         // Log Out
         store.remove('token');
-        //window.location.href = 'http://localhost:3000/';
-        window.location.href = 'http://' + window.location.hostname + ':3000/';
+        window.location.href = process.env.REACT_APP_REDIRECT_URI;
     }
 
     addPlaylist = (playlist, tracks) => {
